@@ -13,8 +13,8 @@ rate2 = 2
 
 states_map = {
            '00': "color1", # blue , no fake news
-           '01': "color2", # orange , fake new at bottom
-           '10': "color3", # yellow , fake new at top
+           '10': "color2", # orange , fake new at bottom
+           '01': "color3", # yellow , fake new at top
            '11': "color4" # red , two fake news
 }
 
