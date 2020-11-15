@@ -1,2 +1,1 @@
-# ad-ple-gustavo-yago
-Final work for the course of Avaliação e Desempenho.
+# Disciplina de Avaliação de Desempenho UFRJ 2020 PLE
