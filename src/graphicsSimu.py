@@ -110,7 +110,7 @@ dict_time2 = collections.Counter({})
 inival = 0.01
 inc = 0.01
 max_time= 24
-initstate = 35
+initstate = 50
 
 interval = np.linspace(inival,max_time,max_time*1000)
 transient = np.zeros((len(interval),nstates))
@@ -119,7 +119,7 @@ for index, t in enumerate(interval):
     print(index,t)
     random.seed(datetime.now())
     
-    state = 35
+    state = 50
     clock = 0
     dict_time = {}
     tline = {}

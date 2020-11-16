@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import simula
 
 nusers = 5
-lambda0=0
-lambda1=0
+lambda0=0.1
+lambda1=0.2
 rate1 = 1
 rate2 = 2
 
@@ -107,7 +107,7 @@ for i in range(nstates):
 inival = 0.01
 inc = 0.01
 maxt = 6
-initstate = 35
+initstate = 50
 
 interval = np.linspace(inival,maxt,600)
 transient = np.zeros((len(interval),nstates))
@@ -144,7 +144,7 @@ print("IC inferior Probabilidade do Estado All Fake {}".format(confinterl))
 inival = 0.01
 inc = 0.01
 maxt = 6
-initstate = 35
+initstate = 50
  
 interval = np.linspace(inival,maxt,600)
 transient = np.zeros((len(interval),nstates))

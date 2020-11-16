@@ -84,8 +84,8 @@ states_map = {
 }
 
 nusers = 5
-lambda0=0
-lambda1=0
+lambda0=0.1
+lambda1=0.2
 rate1 = 1
 rate2 = 1
 globalId = 0
@@ -110,7 +110,7 @@ dict_time2 = collections.Counter({})
 inival = 0.01
 inc = 0.01
 max_time= 120
-initstate = 35
+initstate = 50
 
 interval = np.linspace(inival,max_time,max_time*100)
 transient = np.zeros((len(interval),nstates))
@@ -119,7 +119,7 @@ for index, t in enumerate(interval):
     print(index,t)
     random.seed(datetime.now())
     
-    state = 35
+    state = 50
     clock = 0
     dict_time = {}
     tline = {}

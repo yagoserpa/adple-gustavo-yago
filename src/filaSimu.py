@@ -118,7 +118,7 @@ varGood = []
 varFake = []
 for i in range(100):
     random.seed(datetime.now())
-    state = 35
+    state = 50
     clock = 0
     dict_time = {}
     tline = {}

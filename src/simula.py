@@ -21,7 +21,7 @@ def simula_eventos_discretos(Q,maxt,trans_time,trials):
 
 def simula(Q,maxt,trans_time):
     dict_time = {}
-    state = 35
+    state = 50
     clock = 0
 
     while clock < maxt:

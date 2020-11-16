@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import numpy as np
 import itertools
 import biblioteca as bib
@@ -9,17 +7,18 @@ import simula
 import random
 from datetime import datetime
 import collections
+from decimal import Decimal
 random.seed(datetime.now())
 
 class Evento:
-   def __init__(self,id,remetente,destinatario,tempo,tipo):
+   def __init__(self,id,remetente,destinatario,tempo,tipo,pos):
        self.id = id
        self.remetente = remetente
        self.destinatario = destinatario
        self.tempo = tempo
        self.tipo = tipo
-       #print("adicionado evento {} do remetente {} para {} no tempo {}, tipo {}".format(id,remetente,destinatario,tempo,tipo))
-
+       self.position = pos
+       #print("adicionado id {} origem {} para {} no tempo {} tipo {}".format(id,remetente,destinatario,tempo,tipo))
 def escolheOrigem():
     return random.choices(['0','1','2','3','4'])[0]
 
@@ -43,7 +42,7 @@ def initTline(nusers):
     for i in range(nusers):
         tline['{}'.format(i)] = [0,1]
 
-def addEventos(de,para,tipo):
+def addEventos(de,para,tipo,clock,pos):
     global globalId
     globalId = globalId + 1
     taxa = 0
@@ -51,21 +50,62 @@ def addEventos(de,para,tipo):
         taxa = rate2 + lambda1
     else:
         taxa = rate1 + lambda0
-    filaEventos.append(Evento(globalId,de,para,nextArrival(taxa),tipo))
+    filaEventos.append(Evento(globalId,de,para,(clock + nextArrival(taxa)),tipo,pos))
+    
+    
+def addEventosNovos(de,para,tipo,clock,novaFila,pos):
+    global globalId
+    globalId = globalId + 1
+    taxa = 0
+    if(tipo == 1):
+        taxa = rate2 + lambda1
+    else:
+        taxa = rate1 + lambda0
+    novaFila.append(Evento(globalId,de,para,(clock + nextArrival(taxa)),tipo,pos))    
+    return novaFila
 
-def enviaMensagens(nusers):
+def enviaMensagens(nusers,clock):
     for i in range(nusers):
         origem = '{}'.format(i)
-        addEventos(origem, escolheDestino(origem), tline[origem][0])
-        addEventos(origem, escolheDestino(origem), tline[origem][1])
+        addEventos(origem, escolheDestino(origem), tline[origem][0],clock,0)
+        addEventos(origem, escolheDestino(origem), tline[origem][1],clock,1)
 
 def modificaTimeline(destino,tipo):
-    tline['{}'.format(destino)][random.choices([0,1])[0]] = tipo
+    tline['{}'.format(destino)][0] = tline['{}'.format(destino)][1]
+    tline['{}'.format(destino)][1] = tipo
 
-def trataEventos(argumento,filaEventos):
+def trataEventos(argumento,filaEventos,clock):
     destinos = [evento.destinatario for evento in filaEventos]
     tipos = [evento.tipo for evento in filaEventos]
     modificaTimeline(destinos[argumento],tipos[argumento])
+    destinatario = str(filaEventos[argumento].destinatario)
+    #pos = int(filaEventos[argumento].position)
+    origem = str(filaEventos[argumento].remetente)
+# =============================================================================
+#     del filaEventos[argumento]
+#     novaFila = []
+#     for evento in filaEventos:
+#        position = int(evento.position)
+#        remetente = str(evento.remetente)
+#        if( remetente != destinatario):
+#           novaFila.append(evento)
+#        else:
+#           novaFila = addEventosNovos(remetente,escolheDestino(remetente),tline['{}'.format(remetente)][position],clock,novaFila,position)
+#     novaFila = addEventosNovos(origem,escolheDestino(origem),tline['{}'.format(origem)][1],clock,novaFila,1)
+#     filaEventos = [evento for evento in novaFila]
+# =============================================================================
+    return filaEventos
+# =============================================================================
+#     samples = []
+#     samples = addEventosNovos(origem,escolheDestino(origem),tline['{}'.format(origem)][1],clock,samples,1)
+#     samples = addEventosNovos(origem,escolheDestino(origem),tline['{}'.format(origem)][0],clock,samples,0)
+#     compare = [evento for evento in samples]
+#     samples = [evento.tempo for evento in samples]
+#     filaEventos = [evento for evento in novaFila]
+#     filaEventos.append(compare[np.argmin(samples)])
+# =============================================================================
+    
+
 
 def validaEstado():
     estados = []
@@ -74,6 +114,26 @@ def validaEstado():
     estado = mergeString([estados.count("color1"),estados.count("color2"),estados.count("color3"),estados.count("color4")])
     return estado  
 
+# =============================================================================
+# def getFast(listaEventos,item):
+#       x = []
+#       x = [x for x in listaEventos if str(x.remetente) == item] 
+#       listaEventos = sorted(x, key=lambda e: e.tempo, reverse=True)[:2]
+#       return listaEventos
+#   
+# def deduplica(listaEventos):
+#     lista = []
+#     samples = []
+#     samples = [evento.tempo for evento in listaEventos]
+#     #print(samples)
+#     for i in range(nusers):
+#        lista.append(getFast(listaEventos,'{}'.format(i))) 
+#     lista = sum(lista,[])
+#     samples = []
+#     samples = [evento.tempo for evento in lista]
+#     #print(samples)
+#     return lista
+# =============================================================================
 
 states_map = {
            '00': "color1", # blue , no fake news
@@ -81,14 +141,11 @@ states_map = {
            '10': "color3", # yellow , fake new at top
            '11': "color4" # red , two fake news
 }
-
-    
-
  
 dict_time2 = collections.Counter({})
 nusers = 5
-lambda0=0.1
-lambda1=0.2
+lambda0= 0
+lambda1= 0
 rate1 = 1
 rate2 = 1
 globalId = 0
@@ -112,55 +169,54 @@ dict = {mergeString(tuple(key)): idx for idx, key in enumerate(states_number)}
 nstates = len(states_number)
 probGood = []
 probFake = []   
-
 probGood2= []
 probFake2= []
 varGood = []
 varFake = []
-for i in range(1000):
-    random.seed(datetime.now())
+random.seed(datetime.now())
+for i in range(100):
     state = 35
     clock = 0
     dict_time = {}
     tline = {}
     filaEventos = []
-   
-    #inicializa timeline
     initTline(nusers)
+    enviaMensagens(nusers,clock)
     while(clock < max_time):
         filaEventos = []
+        enviaMensagens(nusers,clock)
         samples = []
-        enviaMensagens(nusers)
         samples = [evento.tempo for evento in filaEventos]
-        #print(samples)
-        time = np.min(samples)
+        print(samples)
+        if(np.min(samples) <= max_time):
+            time = np.min(samples) - clock
+        else:
+            time = max_time - clock 
         if(state == 55 or state == 0):
             time = max_time - clock
         clock += time
         if clock > tempo_trans:
             try:
-               dict_time[state] = dict_time.get(state,0) + time
+               dict_time[state] += (dict_time.get(state, 0) + time)
             except KeyError:
                dict_time[state] = time
-        if(state == 55 or state == 0):
+        if(state == 55 or state == 0 or clock == max_time):
             break
         else:
-            trataEventos(np.argmin(samples),filaEventos)
+            filaEventos = trataEventos(np.argmin(samples),filaEventos,clock)
             state = dict[validaEstado()]
-        #print(state)
-        #print(dict_time)
     dict_time2 += collections.Counter(dict_time)
-    if(i > 0):
+    if(i > 10):
         total_time = 0
         total_time = np.sum(list(dict_time.values()))
         probGood2.append(dict_time.get(0, 0) / total_time)
-        probFake2.append(dict_time.get(55, 0) / total_time)
+        probFake2.append(dict_time.get(55, 0)/ total_time)
         #dict_time2 = collections.Counter({})
-    if( (i % 5) == 0 and (i > 5)):
+    if( ((i % 10) == 0) and i > 10):
         probGood.append(np.mean(probGood2))
         probFake.append(np.mean(probFake2))
-        varGood.append(np.var(probGood))
-        varFake.append(np.var(probFake))
+        varGood.append(np.var(probGood2))
+        varFake.append(np.var(probFake2))
         probGood2 = []
         probFake2 = []
 
