@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import simula
 
 nusers = 5
-lambda0=0
-lambda1=0
+lambda0=0.6
+lambda1=0.3
 rate1 = 1
 rate2 = 2
 
@@ -120,6 +120,33 @@ confinteru=np.mean(fakeVec)+1.96*(np.std(fakeVec)/np.sqrt(len(fakeVec)))
 confinterl=np.mean(fakeVec)-1.96*(np.std(fakeVec)/np.sqrt(len(fakeVec)))
 print("IC superior Probabilidade do Estado All Fake {}".format(confinteru))
 print("IC inferior Probabilidade do Estado All Fake {}".format(confinterl))
+
+
+
+# =============================================================================
+# inival = 0.01
+# inc = 0.01
+# maxt = 6
+# initstate = 35
+# 
+# interval = np.linspace(inival,maxt,600)
+# transient = np.zeros((len(interval),nstates))
+# 
+# for index, t in enumerate(interval):
+#     trans = simula.simula_eventos_discretos(Q,t,0,1000)[0]
+#     transient[index] = trans
+# 
+# plt.plot(interval,transient[:,nstates-1],'b--' , label = "state (0 0 0 5): all fake")
+# plt.plot(interval,transient[:,0],'r', label = "state (5 0 0 0): all non fake")
+# plt.legend(loc="best")
+# plt.xlabel('Time')
+# plt.ylabel('State Probability')
+# 
+# plt.show()
+# =============================================================================
+
+
+
 
 #state = simulaRND.simula_eventos_discretos(Q)
 #print(state)

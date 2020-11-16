@@ -84,8 +84,8 @@ states_map = {
 }
 
 nusers = 5
-lambda0=0
-lambda1=0
+lambda0=0.1
+lambda1=0.2
 rate1 = 1
 rate2 = 1
 globalId = 0
@@ -109,10 +109,10 @@ dict_time2 = collections.Counter({})
 
 inival = 0.01
 inc = 0.01
-max_time= 120
+max_time= 24
 initstate = 35
 
-interval = np.linspace(inival,max_time,max_time*100)
+interval = np.linspace(inival,max_time,max_time*1000)
 transient = np.zeros((len(interval),nstates))
 
 for index, t in enumerate(interval):
@@ -153,7 +153,7 @@ for index, t in enumerate(interval):
     dict_time2 += collections.Counter(dict_time)
     total_time = 0
     total_time = np.sum(list(dict_time2.values()))
-    print(total_time)    
+    #print(total_time)    
     transient[index] = (np.array([dict_time2.get(state, 0) for state in range(nstates)]) / total_time) 
 np.seterr(divide='ignore', invalid='ignore')
 

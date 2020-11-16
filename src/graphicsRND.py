@@ -84,8 +84,8 @@ states_map = {
 }
 
 nusers = 5
-lambda0=0.1
-lambda1=0.2
+lambda0=0
+lambda1=0
 rate1 = 1
 rate2 = 1
 globalId = 0

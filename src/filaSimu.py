@@ -86,13 +86,13 @@ states_map = {
  
 dict_time2 = collections.Counter({})
 nusers = 5
-lambda0=0
-lambda1=0
+lambda0=0.1
+lambda1=0.2
 rate1 = 2
 rate2 = 2
 globalId = 0
 tempo_trans = 0
-max_time= 120
+max_time= 6
 
 #todos estados possiveis
 array = list(states_map.values()) * nusers

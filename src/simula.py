@@ -14,8 +14,8 @@ def simula_eventos_discretos(Q,maxt,trans_time,trials):
         dict_time += simula(Q, maxt, trans_time)
         total_time = 0
         total_time = np.sum(list(dict_time.values()))
-        probGood.append(np.array([dict_time.get(0, 0) for state in range(dim)]) / total_time)
-        probFake.append(np.array([dict_time.get(55, 0) for state in range(dim)]) / total_time)
+        probGood.append(dict_time.get(0, 0) / total_time)
+        probFake.append(dict_time.get(55, 0) / total_time)
     state = sum_states(Q,dict_time)
     return state,probGood,probFake
 
