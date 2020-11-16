@@ -147,5 +147,5 @@ plt.show()
 
 
 
-#state = simulaRND.simula_eventos_discretos(Q)
+#state = simula.simula_eventos_discretos(Q)
 #print(state)
